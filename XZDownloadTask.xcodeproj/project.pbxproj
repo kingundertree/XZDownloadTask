@@ -14,6 +14,7 @@
 		F8A6A9751AE105A00038BC7F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8A6A9741AE105A00038BC7F /* Images.xcassets */; };
 		F8A6A9781AE105A00038BC7F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8A6A9761AE105A00038BC7F /* LaunchScreen.xib */; };
 		F8A6A9841AE105A00038BC7F /* XZDownloadTaskTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A6A9831AE105A00038BC7F /* XZDownloadTaskTests.m */; };
+		F8A6A9901AE49D540038BC7F /* XZDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A6A98F1AE49D540038BC7F /* XZDownloadManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,8 @@
 		F8A6A97D1AE105A00038BC7F /* XZDownloadTaskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XZDownloadTaskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8A6A9821AE105A00038BC7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F8A6A9831AE105A00038BC7F /* XZDownloadTaskTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XZDownloadTaskTests.m; sourceTree = "<group>"; };
+		F8A6A98E1AE49D540038BC7F /* XZDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XZDownloadManager.h; sourceTree = "<group>"; };
+		F8A6A98F1AE49D540038BC7F /* XZDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XZDownloadManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +84,7 @@
 		F8A6A9661AE105A00038BC7F /* XZDownloadTask */ = {
 			isa = PBXGroup;
 			children = (
+				F8A6A98D1AE49C960038BC7F /* XZDownloadTask */,
 				F8A6A96B1AE105A00038BC7F /* AppDelegate.h */,
 				F8A6A96C1AE105A00038BC7F /* AppDelegate.m */,
 				F8A6A96E1AE105A00038BC7F /* ViewController.h */,
@@ -117,6 +121,15 @@
 				F8A6A9821AE105A00038BC7F /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F8A6A98D1AE49C960038BC7F /* XZDownloadTask */ = {
+			isa = PBXGroup;
+			children = (
+				F8A6A98E1AE49D540038BC7F /* XZDownloadManager.h */,
+				F8A6A98F1AE49D540038BC7F /* XZDownloadManager.m */,
+			);
+			name = XZDownloadTask;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,6 +235,7 @@
 				F8A6A9701AE105A00038BC7F /* ViewController.m in Sources */,
 				F8A6A96D1AE105A00038BC7F /* AppDelegate.m in Sources */,
 				F8A6A96A1AE105A00038BC7F /* main.m in Sources */,
+				F8A6A9901AE49D540038BC7F /* XZDownloadManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +430,7 @@
 				F8A6A9891AE105A00038BC7F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F8A6A98A1AE105A00038BC7F /* Build configuration list for PBXNativeTarget "XZDownloadTaskTests" */ = {
 			isa = XCConfigurationList;
@@ -424,6 +439,7 @@
 				F8A6A98C1AE105A00038BC7F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

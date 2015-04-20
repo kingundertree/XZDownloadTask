@@ -17,9 +17,9 @@
 @property (nonatomic, strong) NSURLSessionDownloadTask *normalSessionTask;
 @property (nonatomic, strong) NSURLSessionDownloadTask *resumeSessionTask;
 @property (nonatomic, strong) NSData *partialData;
-@property (nonatomic, copy) void(^downloadSuccuss)(BOOL isSuccuss);
-@property (nonatomic, copy) void(^downloadFail)(BOOL isFail, NSString *errMsg);
-@property (nonatomic, copy) void(^downloadProgress)(double progress);
+@property (nonatomic, copy) void(^downloadSuccuss)(BOOL isSuccuss ,NSDictionary *userInfo);
+@property (nonatomic, copy) void(^downloadFail)(BOOL isFail ,NSDictionary *userInfo, NSString *errMsg);
+@property (nonatomic, copy) void(^downloadProgress)(double progress ,NSDictionary *userInfo);
 @end
 
 @implementation XZDownloadManager
@@ -55,7 +55,7 @@
     return _normalSession;
 }
 
-- (void)congifDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground succuss:(void (^)(BOOL isSuccuss)) succuss fail:(void(^)(BOOL isFail, NSString *errMsg)) fail progress:(void(^)(double progress)) progress {
+- (void)congifDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground succuss:(void (^)(BOOL isSuccuss ,NSDictionary *userInfo)) succuss fail:(void(^)(BOOL isFail ,NSDictionary *userInfo, NSString *errMsg)) fail progress:(void(^)(double progress ,NSDictionary *userInfo)) progress {
     self.downloadSuccuss = succuss;
     self.downloadFail = fail;
     self.downloadProgress = progress;
@@ -101,10 +101,10 @@
             
             [self.resumeSessionTask resume];
         } else {
-            self.downloadFail(YES, @"没有需要恢复的任务");
+            self.downloadFail(YES, self.userInfo, @"没有需要恢复的任务");
         }
     } else {
-        self.downloadFail(YES, @"没有需要恢复的任务");
+        self.downloadFail(YES, self.userInfo, @"没有需要恢复的任务");
     }
 }
 
@@ -129,10 +129,10 @@
             
             [self.resumeSessionTask resume];
         } else {
-            self.downloadFail(YES, @"没什么要重新下载");
+            self.downloadFail(YES, self.userInfo, @"没什么要重新下载");
         }
     } else {
-        self.downloadFail(YES, @"没什么要重新下载");
+        self.downloadFail(YES, self.userInfo, @"没什么要重新下载");
     }
 }
 
@@ -140,13 +140,13 @@
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
     double currentProgress = totalBytesWritten / (double)totalBytesExpectedToWrite;
-    self.downloadProgress(currentProgress);
+    self.downloadProgress(currentProgress, self.userInfo);
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
 {
     // 下载失败
-    self.downloadFail(YES, @"下载失败");
+    self.downloadFail(YES, self.userInfo, @"下载失败");
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
@@ -168,10 +168,10 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             // 此处可更新UI
         });
-        self.downloadSuccuss(YES);
+        self.downloadSuccuss(YES, self.userInfo);
     } else {
         NSLog(@"Couldn't copy the downloaded file");
-        self.downloadFail(YES,@"下载失败");
+        self.downloadFail(YES, self.userInfo ,@"下载失败");
     }
     
     if(downloadTask == self.normalSessionTask) {

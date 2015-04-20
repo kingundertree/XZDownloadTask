@@ -17,12 +17,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // iOS 8 设置系统通知
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+
+    
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    application.applicationIconBadgeNumber -= 1;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -40,6 +47,20 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)notification{
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:notification.alertBody delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
+    
+    NSDictionary* dic = [[NSDictionary alloc]init];
+    //这里可以接受到本地通知中心发送的消息
+    dic = notification.userInfo;
+    NSLog(@"user info = %@",[dic objectForKey:@"key"]);
+    
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
 }
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler

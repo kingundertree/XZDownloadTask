@@ -10,15 +10,19 @@
 
 typedef void(^downloadSuccuss)(BOOL isSuccuss);
 typedef void(^downloadFail)(BOOL isFail, NSString *errMsg);
-typedef void(^downloadProgress)(float progress);
+typedef void(^downloadProgress)(double progress);
 
 @interface XZDownloadManager : NSObject
 
 
-- (void)congiDownloadInfo:(NSString *) downloadStr
-               isDownload:(BOOL)isDownload
+- (void)congifDownloadInfo:(NSString *) downloadStr
+               isDownloadBackground:(BOOL)isDownloadBackground
                   succuss:(void (^)(BOOL isSuccuss)) succuss
                      fail:(void(^)(BOOL isFail, NSString *errMsg)) fail
-                 progress:(void(^)(float progress)) progress;
+                 progress:(void(^)(double progress)) progress;
 
+- (void)pauseDownload;
+- (void)resumeDownload;
+- (void)cancleDownload;
+- (void)restartDownload;
 @end

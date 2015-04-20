@@ -19,7 +19,7 @@
 @property (nonatomic, strong) NSData *partialData;
 @property (nonatomic, copy) void(^downloadSuccuss)(BOOL isSuccuss);
 @property (nonatomic, copy) void(^downloadFail)(BOOL isFail, NSString *errMsg);
-@property (nonatomic, assign) void(^downloadProgress)(float progress);
+@property (nonatomic, copy) void(^downloadProgress)(double progress);
 @end
 
 @implementation XZDownloadManager
@@ -55,12 +55,12 @@
     return _normalSession;
 }
 
-- (void)congiDownloadInfo:(NSString *) downloadStr isDownload:(BOOL)isDownload succuss:(void (^)(BOOL isSuccuss)) succuss fail:(void(^)(BOOL isFail, NSString *errMsg)) fail progress:(void(^)(float progress)) progress {
+- (void)congifDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground succuss:(void (^)(BOOL isSuccuss)) succuss fail:(void(^)(BOOL isFail, NSString *errMsg)) fail progress:(void(^)(double progress)) progress {
     self.downloadSuccuss = succuss;
     self.downloadFail = fail;
     self.downloadProgress = progress;
 
-    if (isDownload) {
+    if (isDownloadBackground) {
         [self startBackgroundDownload:downloadStr];
     } else {
         [self startNormalDownload:downloadStr];
@@ -79,13 +79,17 @@
     [self.normalSessionTask resume];
 }
 
-// http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=b8a2a1a32cf60e30c8950b37b04a1ea81185dbd0cbb5163e&song_id=121523276
-
 - (void)pauseDownload {
+    __weak typeof(self) this = self;
     if (self.normalSessionTask) {
         [self.normalSessionTask cancelByProducingResumeData:^(NSData *resumeData) {
-            self.partialData = resumeData;
-            self.normalSessionTask = nil;
+            this.partialData = resumeData;
+            this.normalSessionTask = nil;
+        }];
+    } else if (self.backgroundSessionTask) {
+        [self.backgroundSessionTask cancelByProducingResumeData:^(NSData *resumeData) {
+            this.partialData = resumeData;
+            this.backgroundSessionTask = nil;
         }];
     }
 }
@@ -112,6 +116,9 @@
         self.partialData = nil;
         [self.resumeSessionTask cancel];
         self.resumeSessionTask = nil;
+    } else if (self.backgroundSessionTask) {
+        [self.backgroundSessionTask cancel];
+        self.backgroundSessionTask = nil;
     }
 }
 
@@ -167,24 +174,23 @@
         self.downloadFail(YES,@"下载失败");
     }
     
-//    if(downloadTask == cancellableTask) {
-//        cancellableTask = nil;
-//    } else if (downloadTask == self.resumableTask) {
-//        self.resumableTask = nil;
-//        partialDownload = nil;
-//    } else
-//        
-    if (session == self.backgroundSession) {
+    if(downloadTask == self.normalSessionTask) {
+        self.normalSessionTask = nil;
+    } else if (downloadTask == self.resumeSessionTask) {
+        self.resumeSessionTask = nil;
+        self.partialData = nil;
+    } else if (session == self.backgroundSession) {
         self.backgroundSessionTask = nil;
-        // Get hold of the app delegate
+
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         if(appDelegate.backgroundURLSessionCompletionHandler) {
             void (^handler)() = appDelegate.backgroundURLSessionCompletionHandler;
             appDelegate.backgroundURLSessionCompletionHandler = nil;
             handler();
+            
+            NSLog(@"后台下载完成");
         }
     }
-    
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error

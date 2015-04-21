@@ -15,6 +15,7 @@ typedef void(^downloadResponse)(XZDownloadResponse *response);
 
 + (id)shareInstance;
 
+// 下载请求
 - (void)addDownloadRequest:(NSString *)downloadStr
                 identifier:(NSString *)identifier
                 targetSelf:(id)targetSelf
@@ -22,7 +23,11 @@ typedef void(^downloadResponse)(XZDownloadResponse *response);
       isDownloadBackground:(BOOL)isDownloadBackground
           downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse;
 
+// 所有下载任务控制
+- (void)cancleAllDownloadRequest;
+- (void)restartAllDownloadRequest;
 
+// 单个下载任务控制
 - (void)pauseDownload:(NSString *)identifier;
 - (void)resumeDownload:(NSString *)identifier;
 - (void)cancleDownload:(NSString *)identifier;

@@ -60,6 +60,24 @@
     NSDictionary *downloadManagerDic = [NSDictionary dictionaryWithObjectsAndKeys:downloadManager,identifier, nil];
     [self.downloadManagerArr addObject:downloadManagerDic];
 }
+#pragma mark - 下载基本方法，批量任务处理
+- (void)cancleAllDownloadRequest {
+    __weak typeof(self) this = self;
+    [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        XZDownloadManager *downloadManager = (XZDownloadManager *)obj;
+        [downloadManager cancleDownload];
+        
+        NSString *identifier = downloadManager.userInfo[@"identifier"];
+        [this removeDownloadTask:identifier];
+    }];
+}
+- (void)restartAllDownloadRequest {
+    [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        XZDownloadManager *downloadManager = (XZDownloadManager *)obj;
+        [downloadManager resumeDownload];
+    }];
+}
+
 #pragma mark - 下载基本方法，暂停、重启、取消、
 - (void)pauseDownload:(NSString *)identifier {
     XZDownloadManager *downloadManager = [self getDownloadManager:identifier];

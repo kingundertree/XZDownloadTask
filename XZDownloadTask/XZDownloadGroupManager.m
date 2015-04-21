@@ -38,15 +38,16 @@
               showProgress:(BOOL)showProgress
       isDownloadBackground:(BOOL)isDownloadBackground
           downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse {
-
+    self.downloadResponse = downloadResponse;
+    
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                               identifier,@"identifier", nil];
 
     __weak typeof(self) this = self;
     XZDownloadManager *downloadManager = [[XZDownloadManager alloc] init];
-    downloadManager.userInfo = userInfo;
     [downloadManager configDownloadInfo:downloadStr
                    isDownloadBackground:isDownloadBackground
+                               userInfo:userInfo
                                 succuss:^(BOOL isSuccuss, NSDictionary *userInfo) {
                                     [this downloadSuccuss:userInfo];
                                 } fail:^(BOOL isFail, NSDictionary *userInfo, NSString *errMsg) {

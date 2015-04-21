@@ -24,6 +24,7 @@ typedef NS_ENUM (NSInteger, XZDownloadStatus) {
 @property (nonatomic, strong) NSString *downloadUrl;
 @property (nonatomic, strong) NSString *downloadSaveFileUrl;
 @property (nonatomic, strong) NSDate *downloadData;
+@property (nonatomic, strong) NSString *downloadResult;
 
 
 @end

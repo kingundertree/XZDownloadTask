@@ -18,6 +18,7 @@ typedef void(^downloadProgress)(double progress ,NSMutableDictionary *userInfo);
 
 - (void)configDownloadInfo:(NSString *) downloadStr
                isDownloadBackground:(BOOL)isDownloadBackground
+                  userInfo:(NSDictionary *)userInfo
                   succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss
                      fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail
                  progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress;

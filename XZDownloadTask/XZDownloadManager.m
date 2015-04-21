@@ -55,11 +55,13 @@
     return _normalSession;
 }
 
-- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress {
+- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground userInfo:(NSDictionary *)userInfo succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress {
     self.downloadSuccuss = succuss;
     self.downloadFail = fail;
     self.downloadProgress = progress;
 
+    self.userInfo = [NSMutableDictionary dictionaryWithDictionary:userInfo];
+    
     if (isDownloadBackground) {
         [self startBackgroundDownload:downloadStr];
     } else {
@@ -126,6 +128,7 @@
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
     double currentProgress = totalBytesWritten / (double)totalBytesExpectedToWrite;
+    NSLog(@"%@---%0.2f",self.userInfo[@"identifier"],currentProgress);
     self.downloadProgress(currentProgress, self.userInfo);
 }
 
@@ -143,7 +146,7 @@
     NSArray *URLs = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentsDirectory = URLs[0];
     
-    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:[location lastPathComponent]];
+    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:self.userInfo[@"identifier"]];
     NSError *error;
     
     // Make sure we overwrite anything that's already there

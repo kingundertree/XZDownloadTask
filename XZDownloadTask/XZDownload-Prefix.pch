@@ -1,0 +1,22 @@
+//
+//  XZDownload-Prefix.pch
+//  XZDownloadTask
+//
+//  Created by xiazer on 15/4/21.
+//  Copyright (c) 2015年 anjuke. All rights reserved.
+//
+
+#ifndef XZDownloadTask_XZDownload_Prefix_pch
+
+//定义屏幕高度
+#define ScreenHeight [UIScreen mainScreen].bounds.size.height
+//定义屏幕宽度
+#define ScreenWidth [UIScreen mainScreen].bounds.size.width
+
+
+#define XZDownloadTask_XZDownload_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif

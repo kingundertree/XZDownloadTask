@@ -17,10 +17,13 @@ typedef NS_ENUM (NSInteger, XZDownloadStatus) {
 @interface XZDownloadResponse : NSObject
 
 @property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, assign) XZDownloadStatus downloadStatus;
 @property (nonatomic, strong) id targert;
 @property (nonatomic, strong) NSString *action;
 @property (nonatomic, assign) double progress;
-@property (nonatomic, strong) NSString *downloadFileUrl;
+@property (nonatomic, strong) NSString *downloadUrl;
+@property (nonatomic, strong) NSString *downloadSaveFileUrl;
+@property (nonatomic, strong) NSDate *downloadData;
 
 
 @end

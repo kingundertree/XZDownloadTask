@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F887D7901AE5EE9600231B16 /* XZDownloadElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F887D78F1AE5EE9600231B16 /* XZDownloadElement.m */; };
 		F8A6A96A1AE105A00038BC7F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A6A9691AE105A00038BC7F /* main.m */; };
 		F8A6A96D1AE105A00038BC7F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A6A96C1AE105A00038BC7F /* AppDelegate.m */; };
 		F8A6A9701AE105A00038BC7F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8A6A96F1AE105A00038BC7F /* ViewController.m */; };
@@ -30,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F887D78E1AE5EE9600231B16 /* XZDownloadElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XZDownloadElement.h; sourceTree = "<group>"; };
+		F887D78F1AE5EE9600231B16 /* XZDownloadElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XZDownloadElement.m; sourceTree = "<group>"; };
 		F8A6A9641AE105A00038BC7F /* XZDownloadTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XZDownloadTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8A6A9681AE105A00038BC7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F8A6A9691AE105A00038BC7F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -136,6 +139,8 @@
 				F8A6A98F1AE49D540038BC7F /* XZDownloadManager.m */,
 				F8A6A9911AE4FE670038BC7F /* XZDownloadGroupManager.h */,
 				F8A6A9921AE4FE670038BC7F /* XZDownloadGroupManager.m */,
+				F887D78E1AE5EE9600231B16 /* XZDownloadElement.h */,
+				F887D78F1AE5EE9600231B16 /* XZDownloadElement.m */,
 				F8A6A9941AE508A50038BC7F /* XZDownloadResponse.h */,
 				F8A6A9951AE508A50038BC7F /* XZDownloadResponse.m */,
 			);
@@ -245,6 +250,7 @@
 				F8A6A9701AE105A00038BC7F /* ViewController.m in Sources */,
 				F8A6A96D1AE105A00038BC7F /* AppDelegate.m in Sources */,
 				F8A6A9961AE508A50038BC7F /* XZDownloadResponse.m in Sources */,
+				F887D7901AE5EE9600231B16 /* XZDownloadElement.m in Sources */,
 				F8A6A96A1AE105A00038BC7F /* main.m in Sources */,
 				F8A6A9931AE4FE670038BC7F /* XZDownloadGroupManager.m in Sources */,
 				F8A6A9901AE49D540038BC7F /* XZDownloadManager.m in Sources */,
@@ -374,6 +380,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = XZDownloadTask/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -384,6 +391,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = XZDownloadTask/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

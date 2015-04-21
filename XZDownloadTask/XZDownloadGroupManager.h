@@ -10,16 +10,21 @@
 #import "XZDownloadResponse.h"
 
 @interface XZDownloadGroupManager : NSObject
-@property (nonatomic, strong) NSMutableArray *downloadManagerArr;
 
-
+typedef void(^downloadResponse)(XZDownloadResponse *response);
 
 + (id)shareInstance;
 
 - (void)addDownloadRequest:(NSString *)downloadStr
                 identifier:(NSString *)identifier
+                targetSelf:(id)targetSelf
+              showProgress:(BOOL)showProgress
       isDownloadBackground:(BOOL)isDownloadBackground
           downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse;
 
+
+- (void)pauseDownload:(NSString *)identifier;
+- (void)resumeDownload:(NSString *)identifier;
+- (void)cancleDownload:(NSString *)identifier;
 
 @end

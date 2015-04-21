@@ -89,23 +89,23 @@
 }
 
 - (void)startDownload {
-    __weak typeof(self) this = self;
-    
-    NSString *imgStr = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=b8a2a1a32cf60e30c8950b37b04a1ea81185dbd0cbb5163e&song_id=121523276";
-    [self.downloadManager congifDownloadInfo:imgStr isDownloadBackground:YES
-                                     succuss:^(BOOL isSuccuss) {
-                                         NSLog(@"下载成功");
-                                     } fail:^(BOOL isFail, NSString *errMsg) {
-                                         NSLog(@"下载失败");
-                                         [self showLocalNotification:YES];
-                                     } progress:^(double progress) {
-                                         this.downloadProgress = progress;
-                                         
-                                         NSString *proStr = [NSString stringWithFormat:@"%0.2f %@",progress*100,@"%"];
-                                         NSLog(@"下载进度---%@",proStr);
-                                         
-                                         [this updateProgress];
-                                     }];
+//    __weak typeof(self) this = self;
+//    
+//    NSString *imgStr = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=b8a2a1a32cf60e30c8950b37b04a1ea81185dbd0cbb5163e&song_id=121523276";
+//    [self.downloadManager configDownloadInfo:imgStr isDownloadBackground:YES
+//                                     succuss:^(BOOL isSuccuss) {
+//                                         NSLog(@"下载成功");
+//                                     } fail:^(BOOL isFail, NSString *errMsg) {
+//                                         NSLog(@"下载失败");
+//                                         [self showLocalNotification:YES];
+//                                     } progress:^(double progress) {
+//                                         this.downloadProgress = progress;
+//                                         
+//                                         NSString *proStr = [NSString stringWithFormat:@"%0.2f %@",progress*100,@"%"];
+//                                         NSLog(@"下载进度---%@",proStr);
+//                                         
+//                                         [this updateProgress];
+//                                     }];
 }
 
 - (void)updateProgress {

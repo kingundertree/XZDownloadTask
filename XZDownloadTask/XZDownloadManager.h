@@ -8,22 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^downloadSuccuss)(BOOL isSuccuss ,NSDictionary *userInfo);
-typedef void(^downloadFail)(BOOL isFail ,NSDictionary *userInfo , NSString *errMsg);
-typedef void(^downloadProgress)(double progress ,NSDictionary *userInfo);
+typedef void(^downloadSuccuss)(BOOL isSuccuss ,NSMutableDictionary *userInfo);
+typedef void(^downloadFail)(BOOL isFail ,NSMutableDictionary *userInfo , NSString *errMsg);
+typedef void(^downloadProgress)(double progress ,NSMutableDictionary *userInfo);
 
 @interface XZDownloadManager : NSObject
 
-@property (nonatomic, strong) NSDictionary *userInfo;
+@property (nonatomic, strong) NSMutableDictionary *userInfo;
 
-- (void)congifDownloadInfo:(NSString *) downloadStr
+- (void)configDownloadInfo:(NSString *) downloadStr
                isDownloadBackground:(BOOL)isDownloadBackground
-                  succuss:(void (^)(BOOL isSuccuss ,NSDictionary *userInfo)) succuss
-                     fail:(void(^)(BOOL isFail ,NSDictionary *userInfo, NSString *errMsg)) fail
-                 progress:(void(^)(double progress ,NSDictionary *userInfo)) progress;
+                  succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss
+                     fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail
+                 progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress;
 
 - (void)pauseDownload;
 - (void)resumeDownload;
 - (void)cancleDownload;
-- (void)restartDownload;
 @end

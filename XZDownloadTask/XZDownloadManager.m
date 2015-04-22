@@ -17,9 +17,11 @@
 @property (nonatomic, strong) NSURLSessionDownloadTask *normalSessionTask;
 @property (nonatomic, strong) NSURLSessionDownloadTask *resumeSessionTask;
 @property (nonatomic, strong) NSData *partialData;
-@property (nonatomic, copy) void(^downloadSuccuss)(BOOL isSuccuss ,NSMutableDictionary *userInfo);
-@property (nonatomic, copy) void(^downloadFail)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg);
-@property (nonatomic, copy) void(^downloadProgress)(double progress ,NSMutableDictionary *userInfo);
+@property (nonatomic, copy) void(^downloadSuccuss)(XZDownloadResponse *response);
+@property (nonatomic, copy) void(^downloadFail)(XZDownloadResponse *response);
+@property (nonatomic, copy) void(^downloadProgress)(XZDownloadResponse *response);
+@property (nonatomic, assign) double lastProgress;
+@property (nonatomic, strong) XZDownloadResponse *downloadResponse;
 @end
 
 @implementation XZDownloadManager
@@ -34,16 +36,14 @@
     return self;
 }
 
-- (NSURLSession *)backgroundSession {
-    static NSURLSession *backgroundSession = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"background NSURLSession"];
-        backgroundSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-    });
+- (NSURLSession *)getBackgroundSession:(NSString *)identifier {
+    NSURLSession *backgroundSession = nil;
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"background-NSURLSession-%@",identifier]];
+    backgroundSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
     
     return backgroundSession;
 }
+
 
 - (NSURLSession *)normalSession {
     if (!_normalSession) {
@@ -55,22 +55,23 @@
     return _normalSession;
 }
 
-- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground userInfo:(NSDictionary *)userInfo succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress {
+- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground identifier:(NSString *)identifier succuss:(void (^)(XZDownloadResponse *response)) succuss fail:(void(^)(XZDownloadResponse *response)) fail progress:(void(^)(XZDownloadResponse *response)) progress {
     self.downloadSuccuss = succuss;
     self.downloadFail = fail;
     self.downloadProgress = progress;
 
-    self.userInfo = [NSMutableDictionary dictionaryWithDictionary:userInfo];
+    self.identifier = identifier;
     
     if (isDownloadBackground) {
-        [self startBackgroundDownload:downloadStr];
+        [self startBackgroundDownload:downloadStr identifier:self.identifier];
     } else {
         [self startNormalDownload:downloadStr];
     }
 }
 
-- (void)startBackgroundDownload:(NSString *)downloadStr {
+- (void)startBackgroundDownload:(NSString *)downloadStr identifier:(NSString *)identifier {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:downloadStr]];
+    self.backgroundSession = [self getBackgroundSession:identifier];
     self.backgroundSessionTask = [self.backgroundSession downloadTaskWithRequest:request];
     [self.backgroundSessionTask resume];
 }
@@ -103,10 +104,10 @@
             
             [self.resumeSessionTask resume];
         } else {
-            self.downloadFail(YES, self.userInfo, @"没有需要恢复的任务");
+            self.downloadFail([self getDownloadRespose:XZDownloadFail identifier:self.identifier progress:0.00 downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"没有需要恢复的任务"]);
         }
     } else {
-        self.downloadFail(YES, self.userInfo, @"没有需要恢复的任务");
+        self.downloadFail([self getDownloadRespose:XZDownloadFail identifier:self.identifier progress:0.00 downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"没有需要恢复的任务"]);
     }
 }
 
@@ -124,18 +125,45 @@
     }
 }
 
+- (XZDownloadResponse *)downloadResponse {
+    if (!_downloadResponse) {
+        _downloadResponse = [[XZDownloadResponse alloc] init];
+    }
+    
+    return _downloadResponse;
+}
+
+- (XZDownloadResponse *)getDownloadRespose:(XZDownloadStatus)status identifier:(NSString *)identifier progress:(double)progress downloadUrl:(NSString *)downloadUrl downloadSaveFileUrl:(NSURL *)downloadSaveFileUrl
+                              downloadData:(NSData *)downloadData downloadResult:(NSString *)downloadResult {
+    self.downloadResponse.downloadStatus = status;
+    self.downloadResponse.identifier = identifier;
+    self.downloadResponse.progress = progress;
+    self.downloadResponse.downloadUrl = downloadUrl;
+    self.downloadResponse.downloadSaveFileUrl = downloadSaveFileUrl;
+    self.downloadResponse.downloadData = downloadData;
+    self.downloadResponse.downloadResult = downloadResult;
+    
+    
+    return self.downloadResponse;
+};
+
+
 #pragma mark - NSURLSessionDownloadDelegate methods
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
     double currentProgress = totalBytesWritten / (double)totalBytesExpectedToWrite;
-    NSLog(@"%@---%0.2f",self.userInfo[@"identifier"],currentProgress);
-    self.downloadProgress(currentProgress, self.userInfo);
+    NSLog(@"%@---%0.2f",self.identifier,currentProgress);
+
+    if (currentProgress >= self.lastProgress+0.05 || currentProgress == 1.00 || currentProgress == 0) {
+        self.lastProgress = currentProgress;
+        self.downloadProgress([self getDownloadRespose:XZDownloading identifier:self.identifier progress:currentProgress downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"下载中"]);
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
 {
     // 下载失败
-    self.downloadFail(YES, self.userInfo, @"下载失败");
+    self.downloadFail([self getDownloadRespose:XZDownloadFail identifier:self.identifier progress:0.00 downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"下载失败"]);
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
@@ -146,7 +174,7 @@
     NSArray *URLs = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentsDirectory = URLs[0];
     
-    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:self.userInfo[@"identifier"]];
+    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:self.identifier];
     NSError *error;
     
     // Make sure we overwrite anything that's already there
@@ -157,11 +185,10 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             // 此处可更新UI
         });
-        [self.userInfo addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:destinationPath,@"downloadFileUrl", nil]];
-        self.downloadSuccuss(YES, self.userInfo);
+        self.downloadSuccuss([self getDownloadRespose:XZDownloadSuccuss identifier:self.identifier progress:1.00 downloadUrl:nil downloadSaveFileUrl:destinationPath downloadData:nil downloadResult:@"下载成功"]);
     } else {
         NSLog(@"Couldn't copy the downloaded file");
-        self.downloadFail(YES, self.userInfo ,@"下载失败");
+        self.downloadFail([self getDownloadRespose:XZDownloadFail identifier:self.identifier progress:0.00 downloadUrl:nil downloadSaveFileUrl:destinationPath downloadData:nil downloadResult:@"下载失败"]);
     }
     
     if(downloadTask == self.normalSessionTask) {
@@ -177,6 +204,8 @@
             void (^handler)() = appDelegate.backgroundURLSessionCompletionHandler;
             appDelegate.backgroundURLSessionCompletionHandler = nil;
             handler();
+            
+            self.downloadSuccuss([self getDownloadRespose:XZDownloadBackgroudSuccuss identifier:self.identifier progress:1.00 downloadUrl:nil downloadSaveFileUrl:destinationPath downloadData:nil downloadResult:@"后台下载下载成功"]);
             
             NSLog(@"后台下载完成");
         }

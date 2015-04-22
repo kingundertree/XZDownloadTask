@@ -7,21 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "XZDownloadResponse.h"
 
-typedef void(^downloadSuccuss)(BOOL isSuccuss ,NSMutableDictionary *userInfo);
-typedef void(^downloadFail)(BOOL isFail ,NSMutableDictionary *userInfo , NSString *errMsg);
-typedef void(^downloadProgress)(double progress ,NSMutableDictionary *userInfo);
+typedef void(^downloadSuccuss)(XZDownloadResponse *response);
+typedef void(^downloadFail)(XZDownloadResponse *response);
+typedef void(^downloadProgress)(XZDownloadResponse *response);
 
 @interface XZDownloadManager : NSObject
 
-@property (nonatomic, strong) NSMutableDictionary *userInfo;
+@property (nonatomic, strong) NSString *identifier;
 
 - (void)configDownloadInfo:(NSString *) downloadStr
                isDownloadBackground:(BOOL)isDownloadBackground
-                  userInfo:(NSDictionary *)userInfo
-                  succuss:(void (^)(BOOL isSuccuss ,NSMutableDictionary *userInfo)) succuss
-                     fail:(void(^)(BOOL isFail ,NSMutableDictionary *userInfo, NSString *errMsg)) fail
-                 progress:(void(^)(double progress ,NSMutableDictionary *userInfo)) progress;
+                  identifier:(NSString *)identifier
+                  succuss:(void (^)(XZDownloadResponse *response)) succuss
+                     fail:(void(^)(XZDownloadResponse *response)) fail
+                 progress:(void(^)(XZDownloadResponse *response)) progress;
 
 - (void)pauseDownload;
 - (void)resumeDownload;

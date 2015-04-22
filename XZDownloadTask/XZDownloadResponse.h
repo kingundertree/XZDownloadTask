@@ -10,6 +10,7 @@
 
 typedef NS_ENUM (NSInteger, XZDownloadStatus) {
     XZDownloadSuccuss, // 下载成功
+    XZDownloadBackgroudSuccuss, // 下载成功
     XZDownloading, // 下载中
     XZDownloadFail // 下载失败
 };
@@ -22,8 +23,8 @@ typedef NS_ENUM (NSInteger, XZDownloadStatus) {
 @property (nonatomic, strong) NSString *action;
 @property (nonatomic, assign) double progress;
 @property (nonatomic, strong) NSString *downloadUrl;
-@property (nonatomic, strong) NSString *downloadSaveFileUrl;
-@property (nonatomic, strong) NSDate *downloadData;
+@property (nonatomic, strong) NSURL *downloadSaveFileUrl;
+@property (nonatomic, strong) NSData *downloadData;
 @property (nonatomic, strong) NSString *downloadResult;
 
 

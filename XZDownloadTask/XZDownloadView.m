@@ -14,8 +14,6 @@
 @property (nonatomic, copy) void(^resumeClick)(NSString *identifier);
 @property (nonatomic, copy) void(^cancleClick)(NSString *identifier);
 @property (nonatomic, strong) UIProgressView *showProgressView;
-@property (nonatomic, assign) float lastProgressV;
-
 @end
 
 @implementation XZDownloadView
@@ -61,14 +59,10 @@
 }
 
 - (void)setProgressV:(float)progressV {
-    if (progressV >= _lastProgressV+0.05 || _progressV >= 0.98 || _progressV == 0) {
-        _progressV = progressV;
-        _lastProgressV = _progressV;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.showProgressView setProgress:_progressV animated:YES];
-        });
-    }
+    _progressV = progressV;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.showProgressView setProgress:_progressV animated:YES];
+    });
 }
 
 - (void)displayUIWithIdentifier:(NSString *)identifier

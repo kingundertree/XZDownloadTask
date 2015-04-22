@@ -63,6 +63,11 @@
         [self.downloadViewArr addObject:downloadView];
     }
     
+    for (NSInteger i = 0; i < self.downloadViewArr.count; i++) {
+        XZDownloadView *downloadView = (XZDownloadView *)[self.downloadViewArr objectAtIndex:i];
+        NSLog(@"self.downloadViewArr---->>%@/%@",downloadView,downloadView.identifer);
+    }
+    
     NSLog(@"%@",self.musicIdentifierArr);
     
     for (NSInteger i = 0; i < 4; i++) {
@@ -104,9 +109,18 @@
 }
 
 - (void)btnClick:(id)sender {
-//    UIButton *btn = (UIButton *)sender;
-//    NSInteger tag = btn.tag;
+    UIButton *btn = (UIButton *)sender;
+    NSInteger tag = btn.tag;
 
+    if (tag == 100) {
+        [self startDownload:-1];
+    } else if (tag == 101) {
+    
+    } else if (tag == 102) {
+    
+    } else {
+    
+    }
 }
 
 - (void)startDownload:(NSInteger)index {
@@ -145,6 +159,10 @@
     if (response.downloadStatus == XZDownloading) {
         XZDownloadView *downloadView = [self getDownloadView:response.identifier];
         downloadView.progressV = response.progress;
+    } else if (response.downloadStatus == XZDownloadBackgroudSuccuss) {
+        [self showLocalNotification:YES];
+    } else if (response.downloadStatus == XZDownloadFail) {
+        [self showLocalNotification:NO];
     }
 }
 
@@ -155,7 +173,7 @@
         if ([view.identifer isEqualToString:identifier]) {
             downloadView = view;
             
-            continue;
+            break;
         }
     }
     return downloadView;

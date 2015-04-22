@@ -40,26 +40,25 @@
           downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse {
     self.downloadResponse = downloadResponse;
     
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                              identifier,@"identifier", nil];
-
-    __weak typeof(self) this = self;
-    XZDownloadManager *downloadManager = [[XZDownloadManager alloc] init];
-    [downloadManager configDownloadInfo:downloadStr
-                   isDownloadBackground:isDownloadBackground
-                               userInfo:userInfo
-                                succuss:^(BOOL isSuccuss, NSDictionary *userInfo) {
-                                    [this downloadSuccuss:userInfo];
-                                } fail:^(BOOL isFail, NSDictionary *userInfo, NSString *errMsg) {
-                                    [this downloadFail:userInfo];
-                                } progress:^(double progress, NSDictionary *userInfo) {
-                                    if (showProgress) {
-                                        [self downloadIng:progress userInfo:userInfo];
-                                    }
-                                }];
-    
-    NSDictionary *downloadManagerDic = [NSDictionary dictionaryWithObjectsAndKeys:downloadManager,identifier, nil];
-    [self.downloadManagerArr addObject:downloadManagerDic];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        __weak typeof(self) this = self;
+        XZDownloadManager *downloadManager = [[XZDownloadManager alloc] init];
+        [downloadManager configDownloadInfo:downloadStr
+                       isDownloadBackground:isDownloadBackground
+                                 identifier:identifier
+                                    succuss:^(XZDownloadResponse *response) {
+                                        [this downloadSuccuss:response];
+                                    } fail:^(XZDownloadResponse *response) {
+                                        [this downloadFail:response];
+                                    } progress:^(XZDownloadResponse *response) {
+                                        if (showProgress) {
+                                            [self downloadIng:response];
+                                        }
+                                    }];
+        
+        NSDictionary *downloadManagerDic = [NSDictionary dictionaryWithObjectsAndKeys:downloadManager,identifier, nil];
+        [self.downloadManagerArr addObject:downloadManagerDic];
+    });
 }
 #pragma mark - 下载基本方法，批量任务处理
 - (void)cancleAllDownloadRequest {
@@ -68,7 +67,7 @@
         XZDownloadManager *downloadManager = (XZDownloadManager *)obj;
         [downloadManager cancleDownload];
         
-        NSString *identifier = downloadManager.userInfo[@"identifier"];
+        NSString *identifier = downloadManager.identifier;
         [this removeDownloadTask:identifier];
     }];
 }
@@ -109,52 +108,20 @@
 }
 
 #pragma mark - 下载成功失败进度处理
-- (void)downloadSuccuss:(NSDictionary *)userInfo {
-    XZDownloadResponse *downloadResponse = [self getSuccussDownloadResponse:userInfo];
-    self.downloadResponse(downloadResponse);
+- (void)downloadSuccuss:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
     
-    [self removeDownloadTask:userInfo[@"identifier"]];
+    [self removeDownloadTask:response.identifier];
 }
 
-- (void)downloadFail:(NSDictionary *)userInfo {
-    XZDownloadResponse *downloadResponse = [self getFailDownloadResponse:userInfo];
-    self.downloadResponse(downloadResponse);
+- (void)downloadFail:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
     
-    [self removeDownloadTask:userInfo[@"identifier"]];
+    [self removeDownloadTask:response.identifier];
 }
 
-- (void)downloadIng:(double)progress userInfo:(NSDictionary *)userInfo {
-    XZDownloadResponse *downloadResponse = [self getDownloadingResponse:progress userInfo:userInfo];
-    self.downloadResponse(downloadResponse);
-}
-
-#pragma mark - 下载相关对象生成
-- (XZDownloadResponse *)getSuccussDownloadResponse:(NSDictionary *)userInfo {
-    XZDownloadResponse *response = [[XZDownloadResponse alloc] init];
-    response.downloadStatus = XZDownloadSuccuss;
-    response.progress = 1.00;
-    response.identifier = userInfo[@"identifier"];
-    response.downloadUrl = userInfo[@"downloadFileUrl"];
-    
-    return response;
-}
-
-- (XZDownloadResponse *)getFailDownloadResponse:(NSDictionary *)userInfo {
-    XZDownloadResponse *response = [[XZDownloadResponse alloc] init];
-    response.downloadStatus = XZDownloadFail;
-    response.progress = 0.00;
-    response.identifier = userInfo[@"identifier"];
-    
-    return response;
-}
-
-- (XZDownloadResponse *)getDownloadingResponse:(double)progress userInfo:(NSDictionary *)userInfo {
-    XZDownloadResponse *response = [[XZDownloadResponse alloc] init];
-    response.downloadStatus = XZDownloading;
-    response.progress = progress;
-    response.identifier = userInfo[@"identifier"];
-    
-    return response;
+- (void)downloadIng:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
 }
 
 - (XZDownloadManager *)getDownloadManager:(NSString *)identifier {

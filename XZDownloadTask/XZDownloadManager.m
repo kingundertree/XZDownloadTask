@@ -20,6 +20,9 @@
 @property (nonatomic, copy) void(^downloadSuccuss)(XZDownloadResponse *response);
 @property (nonatomic, copy) void(^downloadFail)(XZDownloadResponse *response);
 @property (nonatomic, copy) void(^downloadProgress)(XZDownloadResponse *response);
+@property (nonatomic, copy) void(^downloadCancle)(XZDownloadResponse *response);
+@property (nonatomic, copy) void(^downloadPause)(XZDownloadResponse *response);
+@property (nonatomic, copy) void(^downloadResume)(XZDownloadResponse *response);
 @property (nonatomic, assign) double lastProgress;
 @property (nonatomic, strong) XZDownloadResponse *downloadResponse;
 @end
@@ -55,11 +58,14 @@
     return _normalSession;
 }
 
-- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground identifier:(NSString *)identifier succuss:(void (^)(XZDownloadResponse *response)) succuss fail:(void(^)(XZDownloadResponse *response)) fail progress:(void(^)(XZDownloadResponse *response)) progress {
+- (void)configDownloadInfo:(NSString *) downloadStr isDownloadBackground:(BOOL)isDownloadBackground identifier:(NSString *)identifier succuss:(void (^)(XZDownloadResponse *response)) succuss fail:(void(^)(XZDownloadResponse *response)) fail progress:(void(^)(XZDownloadResponse *response)) progress cancle:(void(^)(XZDownloadResponse *response)) cancle pause:(void(^)(XZDownloadResponse *response)) pause resume:(void(^)(XZDownloadResponse *response)) resume{
     self.downloadSuccuss = succuss;
     self.downloadFail = fail;
     self.downloadProgress = progress;
-
+    self.downloadCancle = cancle;
+    self.downloadPause = pause;
+    self.downloadResume = resume;
+    
     self.identifier = identifier;
     
     if (isDownloadBackground) {
@@ -82,6 +88,7 @@
     [self.normalSessionTask resume];
 }
 
+#pragma mark - 下载任务控制，暂停、重启、取消
 - (void)pauseDownload {
     __weak typeof(self) this = self;
     if (self.normalSessionTask) {
@@ -95,6 +102,8 @@
             this.backgroundSessionTask = nil;
         }];
     }
+    
+    self.downloadPause([self getDownloadRespose:XZDownloadPause identifier:self.identifier progress:self.lastProgress downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"任务暂停"]);
 }
 
 - (void)resumeDownload {
@@ -109,6 +118,7 @@
     } else {
         self.downloadFail([self getDownloadRespose:XZDownloadFail identifier:self.identifier progress:0.00 downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"没有需要恢复的任务"]);
     }
+    self.downloadResume([self getDownloadRespose:XZDownloadResume identifier:self.identifier progress:self.lastProgress downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"任务重启"]);
 }
 
 - (void)cancleDownload {
@@ -123,6 +133,8 @@
         [self.backgroundSessionTask cancel];
         self.backgroundSessionTask = nil;
     }
+    
+    self.downloadCancle([self getDownloadRespose:XZDownloadCancle identifier:self.identifier progress:self.lastProgress downloadUrl:nil downloadSaveFileUrl:nil downloadData:nil downloadResult:@"任务取消"]);
 }
 
 - (XZDownloadResponse *)downloadResponse {

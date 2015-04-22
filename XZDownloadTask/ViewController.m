@@ -97,11 +97,15 @@
 - (void)startClick:(NSString *)identifier {
     [self startDownload:[self getDownloadTaskIndex:identifier]];
 }
+
 - (void)pauseClick:(NSString *)identifier {
+    [[XZDownloadGroupManager shareInstance] pauseDownload:identifier];
 }
 - (void)resumeClick:(NSString *)identifier {
+    [[XZDownloadGroupManager shareInstance] resumeDownload:identifier];
 }
 - (void)cancleClick:(NSString *)identifier {
+    [[XZDownloadGroupManager shareInstance] cancleDownload:identifier];
 }
 
 - (NSInteger)getDownloadTaskIndex:(NSString *)identifier {
@@ -157,12 +161,21 @@
 
 - (void)handleResponse:(XZDownloadResponse *)response {
     if (response.downloadStatus == XZDownloading) {
+        NSLog(@"下载任务ing%@",response.identifier);
         XZDownloadView *downloadView = [self getDownloadView:response.identifier];
         downloadView.progressV = response.progress;
     } else if (response.downloadStatus == XZDownloadBackgroudSuccuss) {
+        NSLog(@"下载任务成功%@",response.identifier);
         [self showLocalNotification:YES];
     } else if (response.downloadStatus == XZDownloadFail) {
+        NSLog(@"下载任务失败%@",response.identifier);
         [self showLocalNotification:NO];
+    } else if (response.downloadStatus == XZDownloadCancle) {
+        NSLog(@"下载任务取消%@",response.identifier);
+    } else if (response.downloadStatus == XZDownloadPause) {
+        NSLog(@"下载任务暂停%@",response.identifier);
+    } else if (response.downloadStatus == XZDownloadResume) {
+        NSLog(@"下载任务重启%@",response.identifier);
     }
 }
 
@@ -177,18 +190,6 @@
         }
     }
     return downloadView;
-}
-
-- (void)pauseDownload:(NSInteger)index {
-    [self.downloadManager pauseDownload];
-}
-
-- (void)resumeDownload:(NSInteger)index {
-    [self.downloadManager resumeDownload];
-}
-
-- (void)cancleDownload:(NSInteger)index {
-    [self.downloadManager cancleDownload];
 }
 
 - (void)showLocalNotification:(BOOL)downloadSuc {

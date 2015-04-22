@@ -54,6 +54,12 @@
                                         if (showProgress) {
                                             [self downloadIng:response];
                                         }
+                                    } cancle:^(XZDownloadResponse *response) {
+                                        [self downloadCancle:response];
+                                    } pause:^(XZDownloadResponse *response) {
+                                        [self downloadPause:response];
+                                    } resume:^(XZDownloadResponse *response) {
+                                        [self downloadResume:response];
                                     }];
         
         NSDictionary *downloadManagerDic = [NSDictionary dictionaryWithObjectsAndKeys:downloadManager,identifier, nil];
@@ -61,6 +67,13 @@
     });
 }
 #pragma mark - 下载基本方法，批量任务处理
+- (void)pauseAllDownloadRequest {
+    [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        XZDownloadManager *downloadManager = (XZDownloadManager *)obj;
+        [downloadManager pauseDownload];
+    }];
+}
+
 - (void)cancleAllDownloadRequest {
     __weak typeof(self) this = self;
     [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -71,30 +84,60 @@
         [this removeDownloadTask:identifier];
     }];
 }
-- (void)restartAllDownloadRequest {
+
+- (void)resumeAllDownloadRequest {
     [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         XZDownloadManager *downloadManager = (XZDownloadManager *)obj;
         [downloadManager resumeDownload];
     }];
 }
 
-#pragma mark - 下载基本方法，暂停、重启、取消、
+
+#pragma mark - 下载成功失败进度处理,下载基本方法，暂停、重启、取消
+- (void)downloadSuccuss:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
+    
+    [self removeDownloadTask:response.identifier];
+}
+
+- (void)downloadFail:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
+    
+    [self removeDownloadTask:response.identifier];
+}
+
+- (void)downloadCancle:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
+}
+
+- (void)downloadPause:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
+}
+
+- (void)downloadResume:(XZDownloadResponse *)response {
+    self.downloadResponse(response);
+}
+
+#pragma mark - 下载基本方法，暂停、重启、取消
 - (void)pauseDownload:(NSString *)identifier {
     XZDownloadManager *downloadManager = [self getDownloadManager:identifier];
     [downloadManager pauseDownload];
     
     [self removeDownloadTask:identifier];
 }
+
 - (void)resumeDownload:(NSString *)identifier {
     XZDownloadManager *downloadManager = [self getDownloadManager:identifier];
     [downloadManager resumeDownload];
 }
+
 - (void)cancleDownload:(NSString *)identifier {
     XZDownloadManager *downloadManager = [self getDownloadManager:identifier];
     [downloadManager cancleDownload];
     
     [self removeDownloadTask:identifier];
 }
+
 
 #pragma mark - 下载类管理
 - (void)addDownloadRequestElementWith:(NSString *)identifier targetSelf:(id)targetSelf downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse {
@@ -107,18 +150,6 @@
     [self.downloadElementArr addObject:[NSDictionary dictionaryWithObjectsAndKeys:element,identifier, nil]];
 }
 
-#pragma mark - 下载成功失败进度处理
-- (void)downloadSuccuss:(XZDownloadResponse *)response {
-    self.downloadResponse(response);
-    
-    [self removeDownloadTask:response.identifier];
-}
-
-- (void)downloadFail:(XZDownloadResponse *)response {
-    self.downloadResponse(response);
-    
-    [self removeDownloadTask:response.identifier];
-}
 
 - (void)downloadIng:(XZDownloadResponse *)response {
     self.downloadResponse(response);

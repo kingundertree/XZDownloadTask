@@ -63,23 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
             endingLineNumber = "65"
-            landmarkName = "-configDownloadInfo:isDownloadBackground:identifier:succuss:fail:progress:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "XZDownloadTask/XZDownloadGroupManager.m"
-            timestampString = "451385898.522393"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "-downloadSuccuss:"
+            landmarkName = "-configDownloadInfo:isDownloadBackground:identifier:succuss:fail:progress:cancle:pause:resume:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

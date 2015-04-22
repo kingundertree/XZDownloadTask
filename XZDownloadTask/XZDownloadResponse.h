@@ -12,7 +12,10 @@ typedef NS_ENUM (NSInteger, XZDownloadStatus) {
     XZDownloadSuccuss, // 下载成功
     XZDownloadBackgroudSuccuss, // 下载成功
     XZDownloading, // 下载中
-    XZDownloadFail // 下载失败
+    XZDownloadFail, // 下载失败
+    XZDownloadResume, // 重启
+    XZDownloadCancle, // 取消
+    XZDownloadPause // 暂停
 };
 
 @interface XZDownloadResponse : NSObject
@@ -29,3 +32,4 @@ typedef NS_ENUM (NSInteger, XZDownloadStatus) {
 
 
 @end
+

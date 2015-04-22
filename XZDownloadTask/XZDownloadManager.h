@@ -12,6 +12,9 @@
 typedef void(^downloadSuccuss)(XZDownloadResponse *response);
 typedef void(^downloadFail)(XZDownloadResponse *response);
 typedef void(^downloadProgress)(XZDownloadResponse *response);
+typedef void(^downloadCancle)(XZDownloadResponse *response);
+typedef void(^downloadPause)(XZDownloadResponse *response);
+typedef void(^downloadResume)(XZDownloadResponse *response);
 
 @interface XZDownloadManager : NSObject
 
@@ -22,7 +25,10 @@ typedef void(^downloadProgress)(XZDownloadResponse *response);
                   identifier:(NSString *)identifier
                   succuss:(void (^)(XZDownloadResponse *response)) succuss
                      fail:(void(^)(XZDownloadResponse *response)) fail
-                 progress:(void(^)(XZDownloadResponse *response)) progress;
+                 progress:(void(^)(XZDownloadResponse *response)) progress
+                    cancle:(void(^)(XZDownloadResponse *response)) cancle
+                     pause:(void(^)(XZDownloadResponse *response)) pause
+                     resume:(void(^)(XZDownloadResponse *response)) resume;
 
 - (void)pauseDownload;
 - (void)resumeDownload;

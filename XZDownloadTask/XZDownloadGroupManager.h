@@ -24,8 +24,9 @@ typedef void(^downloadResponse)(XZDownloadResponse *response);
           downloadResponse:(void(^)(XZDownloadResponse *response))downloadResponse;
 
 // 所有下载任务控制
+- (void)pauseAllDownloadRequest;
 - (void)cancleAllDownloadRequest;
-- (void)restartAllDownloadRequest;
+- (void)resumeAllDownloadRequest;
 
 // 单个下载任务控制
 - (void)pauseDownload:(NSString *)identifier;

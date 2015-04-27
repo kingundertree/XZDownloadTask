@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,6 +23,12 @@
     [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [UIColor blackColor];
+    [self.window makeKeyAndVisible];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    self.window.rootViewController = nav;
     
     return YES;
 }

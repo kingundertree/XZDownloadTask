@@ -18,6 +18,15 @@
 
 @implementation XZDownloadGroupManager
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self initData];
+    }
+    
+    return self;
+}
+
 + (instancetype)shareInstance {
     static XZDownloadGroupManager *downloadGroupManager;
     static dispatch_once_t onceToken;
@@ -62,8 +71,7 @@
                                         [self downloadResume:response];
                                     }];
         
-        NSDictionary *downloadManagerDic = [NSDictionary dictionaryWithObjectsAndKeys:downloadManager,identifier, nil];
-        [self.downloadManagerArr addObject:downloadManagerDic];
+        [self.downloadManagerArr addObject:downloadManager];
     });
 }
 #pragma mark - 下载基本方法，批量任务处理
@@ -122,8 +130,6 @@
 - (void)pauseDownload:(NSString *)identifier {
     XZDownloadManager *downloadManager = [self getDownloadManager:identifier];
     [downloadManager pauseDownload];
-    
-    [self removeDownloadTask:identifier];
 }
 
 - (void)resumeDownload:(NSString *)identifier {
@@ -156,18 +162,13 @@
 }
 
 - (XZDownloadManager *)getDownloadManager:(NSString *)identifier {
-    XZDownloadManager *downloadManager;
-    
-    [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSDictionary *downloadElement = (NSDictionary *)obj;
-        if ([downloadElement[@"identifier"] isEqualToString:identifier]) {
-            downloadElement = [self.downloadManagerArr objectAtIndex:idx];
-            
-            *stop = YES;
+    for (NSInteger i = 0; i < self.downloadManagerArr.count; i++) {
+        XZDownloadManager *downloadManager = [self.downloadManagerArr objectAtIndex:i];
+        if ([downloadManager.identifier isEqualToString:identifier]) {
+            return downloadManager;
         }
-    }];
-    
-    return downloadManager;
+    }
+    return nil;
 }
 
 - (XZDownloadElement *)getDownloadElement:(NSString *)identifier {

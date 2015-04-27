@@ -66,7 +66,7 @@
     self.downloadPause = pause;
     self.downloadResume = resume;
     
-    self.identifier = identifier;
+    self.identifier = identifier ? identifier : [[NSProcessInfo processInfo] globallyUniqueString];
     
     if (isDownloadBackground) {
         [self startBackgroundDownload:downloadStr identifier:self.identifier];
@@ -99,7 +99,6 @@
     } else if (self.backgroundSessionTask) {
         [self.backgroundSessionTask cancelByProducingResumeData:^(NSData *resumeData) {
             this.partialData = resumeData;
-            this.backgroundSessionTask = nil;
         }];
     }
     
@@ -145,8 +144,7 @@
     return _downloadResponse;
 }
 
-- (XZDownloadResponse *)getDownloadRespose:(XZDownloadStatus)status identifier:(NSString *)identifier progress:(double)progress downloadUrl:(NSString *)downloadUrl downloadSaveFileUrl:(NSURL *)downloadSaveFileUrl
-                              downloadData:(NSData *)downloadData downloadResult:(NSString *)downloadResult {
+- (XZDownloadResponse *)getDownloadRespose:(XZDownloadStatus)status identifier:(NSString *)identifier progress:(double)progress downloadUrl:(NSString *)downloadUrl downloadSaveFileUrl:(NSURL *)downloadSaveFileUrl downloadData:(NSData *)downloadData downloadResult:(NSString *)downloadResult {
     self.downloadResponse.downloadStatus = status;
     self.downloadResponse.identifier = identifier;
     self.downloadResponse.progress = progress;

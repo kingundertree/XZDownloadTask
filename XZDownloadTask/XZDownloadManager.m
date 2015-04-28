@@ -215,10 +215,10 @@
             appDelegate.backgroundURLSessionCompletionHandler = nil;
             handler();
             
-            self.downloadSuccuss([self getDownloadRespose:XZDownloadBackgroudSuccuss identifier:self.identifier progress:1.00 downloadUrl:nil downloadSaveFileUrl:destinationPath downloadData:nil downloadResult:@"后台下载下载成功"]);
-            
             NSLog(@"后台下载完成");
         }
+        
+        self.downloadSuccuss([self getDownloadRespose:XZDownloadBackgroudSuccuss identifier:self.identifier progress:1.00 downloadUrl:nil downloadSaveFileUrl:destinationPath downloadData:nil downloadResult:@"后台下载下载成功"]);
     }
 }
 

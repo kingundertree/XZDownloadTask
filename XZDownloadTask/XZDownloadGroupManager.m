@@ -188,6 +188,13 @@
 
 #pragma mark - 删除下载任务
 - (void)removeDownloadTask:(NSString *)identifier {
+    if (!self.downloadManagerArr && self.downloadManagerArr.count == 0) {
+        return;
+    }
+    if (!self.downloadElementArr && self.downloadElementArr.count == 0) {
+        return;
+    }
+    
     __weak typeof(self) this = self;
     // 删除下载任务
     [self.downloadManagerArr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

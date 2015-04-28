@@ -11,11 +11,6 @@
 #import "XZDownloadGroupManager.h"
 #import "XZDownloadView.h"
 
-////定义屏幕高度
-//#define ScreenHeight [UIScreen mainScreen].bounds.size.height
-////定义屏幕宽度
-//#define ScreenWidth [UIScreen mainScreen].bounds.size.width
-
 @interface MultDownloadViewController ()
 @property (nonatomic, strong) XZDownloadManager *downloadManager;
 @property (nonatomic, strong) UIProgressView *progressView1;
@@ -125,10 +120,10 @@
 }
 
 - (void)startDownload:(NSInteger)index {
-    NSString *music1 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/238979467/124380645248400128.mp3?xcode=a31af1dad0ce66f58e501bb39bd713e7a957e289de92d109&song_id=124380645";
-    NSString *music2 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/239130183/1226741191429509661128.mp3?xcode=11cd45642bcebf4368254d6e7a4f74a9c3ba3c8b80064e3b&song_id=122674119";
-    NSString *music3 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240277173/2402770671429581661128.mp3?xcode=11cd45642bcebf43e12afa176a6962aaad0a5cf648f90713&song_id=240277067";
-    NSString *music4 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=b8a2a1a32cf60e30c8950b37b04a1ea81185dbd0cbb5163e&song_id=121523276";
+    NSString *music1 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=1cfc4630c94b7e810406d6bd91c826431185dbd0cbb5163e&song_id=121523276";
+    NSString *music2 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240373726/2403730813600128.mp3?xcode=1cfc4630c94b7e817b1e03c7a13241fff4b09a757b6f1d9e&song_id=240373081";
+    NSString *music3 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240277173/240277067126000128.mp3?xcode=1cfc4630c94b7e8198fbc7ee106a0bc7ad0a5cf648f90713&song_id=240277067";
+    NSString *music4 = @"https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/AVFoundationPG.pdf";
     NSArray *musicUrlArr = [NSArray arrayWithObjects:music1,music2,music3,music4, nil];
     
     __weak typeof(self) this = self;
@@ -161,9 +156,15 @@
         NSLog(@"下载任务ing%@",response.identifier);
         XZDownloadView *downloadView = [self getDownloadView:response.identifier];
         downloadView.progressV = response.progress;
-    } else if (response.downloadStatus == XZDownloadBackgroudSuccuss) {
+    } else if (response.downloadStatus == XZDownloadSuccuss) {
         NSLog(@"下载任务成功%@",response.identifier);
+        XZDownloadView *downloadView = [self getDownloadView:response.identifier];
+        downloadView.progressV = 1.0;
+    } else if (response.downloadStatus == XZDownloadBackgroudSuccuss) {
+        NSLog(@"后台下载任务成功%@",response.identifier);
         [self showLocalNotification:YES];
+        XZDownloadView *downloadView = [self getDownloadView:response.identifier];
+        downloadView.progressV = 1.0;
     } else if (response.downloadStatus == XZDownloadFail) {
         NSLog(@"下载任务失败%@",response.identifier);
         [self showLocalNotification:NO];

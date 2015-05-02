@@ -33,6 +33,38 @@
             endingLineNumber = "210"
             landmarkName = "-URLSession:downloadTask:didFinishDownloadingToURL:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[XZDownloadManager URLSession:downloadTask:didFinishDownloadingToURL:]"
+                  moduleName = "XZDownloadTask"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xiazer/%E5%BF%AB%E7%9B%98/items/%E4%B8%8B%E8%BD%BD/XZDownloadTask/XZDownloadTask/XZDownloadManager.m"
+                  timestampString = "452232568.434713"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "210"
+                  endingLineNumber = "210"
+                  offsetFromSymbolStart = "1338">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[XZDownloadManager URLSession:downloadTask:didFinishDownloadingToURL:]"
+                  moduleName = "XZDownloadTask"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xiazer/%E5%BF%AB%E7%9B%98/items/%E4%B8%8B%E8%BD%BD/XZDownloadTask/XZDownloadTask/XZDownloadManager.m"
+                  timestampString = "452232568.434864"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "210"
+                  endingLineNumber = "210"
+                  offsetFromSymbolStart = "1343">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

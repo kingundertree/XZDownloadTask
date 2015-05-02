@@ -33,7 +33,7 @@
     self.downloadViewArr = [NSMutableArray array];
     
     for (NSInteger j = 0; j < 4; j++) {
-        NSString* uniCode = [[NSProcessInfo processInfo] globallyUniqueString];
+        NSString *uniCode = [[NSProcessInfo processInfo] globallyUniqueString];
         [self.musicIdentifierArr addObject:uniCode];
         
         XZDownloadView *downloadView = [[XZDownloadView alloc] initWithFrame:CGRectMake(0, 100+60*j, ScreenWidth, 50)];
@@ -111,13 +111,14 @@
     if (tag == 100) {
         [self startDownload:-1];
     } else if (tag == 101) {
-        
+        [[XZDownloadGroupManager shareInstance] pauseAllDownloadRequest];
     } else if (tag == 102) {
-        
+        [[XZDownloadGroupManager shareInstance] cancleAllDownloadRequest];
     } else {
-        
+        [[XZDownloadGroupManager shareInstance] resumeAllDownloadRequest];
     }
 }
+
 
 - (void)startDownload:(NSInteger)index {
     NSString *music1 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240885332/124380645248400128.mp3?xcode=b96fdf1351643f39e12afa176a6962aab545e6e71c27bf77&song_id=124380645";

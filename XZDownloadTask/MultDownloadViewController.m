@@ -120,9 +120,9 @@
 }
 
 - (void)startDownload:(NSInteger)index {
-    NSString *music1 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/134423200/12152327672000128.mp3?xcode=1cfc4630c94b7e810406d6bd91c826431185dbd0cbb5163e&song_id=121523276";
-    NSString *music2 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240373726/2403730813600128.mp3?xcode=1cfc4630c94b7e817b1e03c7a13241fff4b09a757b6f1d9e&song_id=240373081";
-    NSString *music3 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240277173/240277067126000128.mp3?xcode=1cfc4630c94b7e8198fbc7ee106a0bc7ad0a5cf648f90713&song_id=240277067";
+    NSString *music1 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240885332/124380645248400128.mp3?xcode=b96fdf1351643f39e12afa176a6962aab545e6e71c27bf77&song_id=124380645";
+    NSString *music2 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/239130183/12267411954000128.mp3?xcode=b96fdf1351643f39bc54635511ee1c13c3ba3c8b80064e3b&song_id=122674119";
+    NSString *music3 = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/238979065/137078183169200128.mp3?xcode=999cf85ef0a16522698e959dcc59d9b4b3362d258e48ce4b&song_id=137078183";
     NSString *music4 = @"https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/AVFoundationPG.pdf";
     NSArray *musicUrlArr = [NSArray arrayWithObjects:music1,music2,music3,music4, nil];
     
@@ -155,7 +155,9 @@
     if (response.downloadStatus == XZDownloading) {
         NSLog(@"下载任务ing%@",response.identifier);
         XZDownloadView *downloadView = [self getDownloadView:response.identifier];
-        downloadView.progressV = response.progress;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            downloadView.progressV = response.progress;
+        });
     } else if (response.downloadStatus == XZDownloadSuccuss) {
         NSLog(@"下载任务成功%@",response.identifier);
         XZDownloadView *downloadView = [self getDownloadView:response.identifier];

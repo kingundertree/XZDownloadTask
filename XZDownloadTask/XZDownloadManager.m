@@ -42,6 +42,7 @@
 - (NSURLSession *)getBackgroundSession:(NSString *)identifier {
     NSURLSession *backgroundSession = nil;
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"background-NSURLSession-%@",identifier]];
+    config.HTTPMaximumConnectionsPerHost = 5;
     backgroundSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
     
     return backgroundSession;

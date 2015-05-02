@@ -88,7 +88,7 @@
 - (void)startDownload {
     __weak typeof(self) this = self;
     
-    NSString *imgStr = @"http://music.baidu.com/data/music/file?link=http://yinyueshiting.baidu.com/data2/music/240885332/124380645248400128.mp3?xcode=39485cd81627146b59a442d4041fa9d2b545e6e71c27bf77&song_id=124380645";
+    NSString *imgStr = @"https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/AVFoundationPG/AVFoundationPG.pdf";
     
     
     [self.downloadManager configDownloadInfo:imgStr
@@ -116,7 +116,9 @@
 }
 
 - (void)updateProgress {
-    self.progressLab.text = [NSString stringWithFormat:@"%0.2f",self.downloadProgress];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressLab.text = [NSString stringWithFormat:@"%0.2f",self.downloadProgress];
+    });
 }
 
 - (void)pauseDownload {
